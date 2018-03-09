@@ -1,7 +1,12 @@
+package tsukihi;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import javax.security.auth.login.LoginException;
 
@@ -27,7 +32,9 @@ public class Tsukihi extends ListenerAdapter
 	private String botToken;
 	private static boolean verbose = true;
 	private JDA jda;
-	private Guild guild;
+	
+	private Map<String, Module> modules;
+	
 	Tsukihi()
 	{
 		botToken = getBotToken();
@@ -39,6 +46,7 @@ public class Tsukihi extends ListenerAdapter
 		{
 			e.printStackTrace();
 		}
+		modules = new HashMap<String, Module>();
 	}
 
 	/**
@@ -71,6 +79,10 @@ public class Tsukihi extends ListenerAdapter
 		return botToken;
 	}
 	
+	/**
+	 * Print a string to Sysout if verbose is active
+	 * @param in the string to be printed
+	 */
 	public void print(String in)
 	{
 		if (verbose)
@@ -79,22 +91,41 @@ public class Tsukihi extends ListenerAdapter
 		}
 	}
 	
+	public void addModule(String invoker, Module module)
+	{
+		modules.put(invoker, module);
+	}
 	/* 
 	 * ==========================================================================================================
-	 * OVERRIDED FUNCTIONS
+	 * OVERRIDED FUNCTIONS (EVENTS)
 	 * ==========================================================================================================
 	 */
 	@Override
 	public void onMessageReceived(MessageReceivedEvent e)
 	{
-		Message message = e.getMessage();
-		MessageChannel channel = e.getChannel();
-		User user = e.getAuthor();
-		print(message.getContentRaw());
-		jda.getSelfUser();
-		if (!user.isBot() && message.getMentionedUsers().contains(jda.getSelfUser()))
+		StringTokenizer st = new StringTokenizer(e.getMessage().getContentStripped());
+		
+		// if the bot was mentioned
+		if (st.hasMoreTokens() && st.nextToken().equals("@" + jda.getSelfUser().getName()))
 		{
-			channel.sendMessage("Hi, " + user.getAsMention() + "! I don't do anything yet, but I exist now!").queue();
+			if (st.hasMoreTokens())
+			{
+				String requestedModuleName = st.nextToken();
+				Module target;
+				if (modules.containsKey(requestedModuleName))
+				{
+					target = modules.get(requestedModuleName);
+				}
+				else
+				{
+					target = modules.get("error");
+				}
+				target.commandReceived(e, requestedModuleName, st);
+			}
+			else	// Tsukihi was mentioned, but no additional arguments provided
+			{
+				e.getChannel().sendMessage("Hi! Thanks for mentioning me, but you didn't tell me to do anything...").queue();
+			}
 		}
 	}
 	
