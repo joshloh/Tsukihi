@@ -14,5 +14,6 @@ public class Main
 		Tsukihi tsukihi = new Tsukihi();
 		new QuoteModule(tsukihi);
 		new ErrorModule(tsukihi);
+		new HelpModule(tsukihi);
 	}
 }
