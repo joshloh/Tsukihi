@@ -114,6 +114,12 @@ public class QuoteModule extends Module
 	}
 	
 	@Override
+	public List<String> createDescriptions()
+	{
+		return Arrays.asList("sends a random quote from Hali","sends a random quote from Emmanuel","sends a random quote from Denton");
+	}
+	
+	@Override
 	public void commandReceived(MessageReceivedEvent e, String invoker, StringTokenizer st)
 	{
 		List<String> messages = quotes.get(invoker);

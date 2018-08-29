@@ -11,7 +11,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  * @author joshuafloh
  *
  */
-public class ErrorModule extends Module
+public class ErrorModule extends HelpModule
 {
 	ErrorModule(Tsukihi tsukihi)
 	{
@@ -23,11 +23,16 @@ public class ErrorModule extends Module
 	{
 		return Arrays.asList("error");
 	}
-	
+	@Override
+	public List<String> createDescriptions()
+	{
+		return Arrays.asList("displays the generic error");
+	}
 	@Override
 	public void commandReceived(MessageReceivedEvent e, String invoker, StringTokenizer st)
 	{
 		e.getChannel().sendMessage("Invalid command").queue();
-		// TODO: Print help message here
+		printHelpMenu(e);
+		
 	}
 }

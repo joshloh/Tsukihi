@@ -1,9 +1,11 @@
 package tsukihi;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class HelpModule extends Module
@@ -18,14 +20,28 @@ public class HelpModule extends Module
 		return Arrays.asList("help");
 	}
 	@Override
+	public List<String> createDescriptions()
+	{
+		return Arrays.asList("displays this help message");
+	}
+	@Override
 	public void commandReceived(MessageReceivedEvent e, String invoker, StringTokenizer st)
 	{
-		e.getChannel().sendMessage("help message placeholder\n"
-				+ "here are some commands\n"
-				+ "hali\n"
-				+ "emma\n"
-				+ "denton\n"
-				+ "help\n"
-				+ "i ceebs explaining what they do for now ill finish this module laterrr\n").queue();
+		printHelpMenu(e);
+	}
+	
+	protected void printHelpMenu(MessageReceivedEvent e)
+	{
+		String out = "";
+		for (Module m : tsukihi.moduleSet)
+		{
+			out += m.help();
+		}
+		
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setTitle("help", null);
+		eb.setColor(Color.blue);
+		eb.setDescription(out + "\n");
+		e.getChannel().sendMessage(eb.build()).queue();
 	}
 }

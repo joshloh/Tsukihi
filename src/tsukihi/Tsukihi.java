@@ -3,9 +3,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.security.auth.login.LoginException;
@@ -34,6 +37,7 @@ public class Tsukihi extends ListenerAdapter
 	private JDA jda;
 	
 	private Map<String, Module> modules;
+	public Set<Module> moduleSet;
 	
 	Tsukihi()
 	{
@@ -47,6 +51,7 @@ public class Tsukihi extends ListenerAdapter
 			e.printStackTrace();
 		}
 		modules = new HashMap<String, Module>();
+		moduleSet = new LinkedHashSet<Module>();
 	}
 
 	/**
@@ -94,6 +99,12 @@ public class Tsukihi extends ListenerAdapter
 	public void addModule(String invoker, Module module)
 	{
 		modules.put(invoker, module);
+		moduleSet.add(module);
+	}
+	
+	public Map<String, Module> getModules()
+	{
+		return modules;
 	}
 	/* 
 	 * ==========================================================================================================

@@ -19,6 +19,7 @@ public abstract class Module
 {
 	protected Tsukihi tsukihi;
 	protected List<String> invokers;
+	protected List<String> descriptions;
 
 	/**
 	 * Default constructor: should never really be called
@@ -38,6 +39,17 @@ public abstract class Module
 		{
 			tsukihi.addModule(s, this);
 		}
+		descriptions = createDescriptions();
+	}
+	
+	public String help()
+	{
+		String out = "";
+		for (int i = 0; i < invokers.size(); i++)
+		{
+			out += "**" + invokers.get(i) + "** " + descriptions.get(i) + "\n";
+		}
+		return out;
 	}
 	
 	/**
@@ -45,7 +57,7 @@ public abstract class Module
 	 * @return  a list of all the strings that invoke this module
 	 */
 	public abstract List<String> createInvokers();
-	
+	public abstract List<String> createDescriptions();
 	/* ===========================================================================================
 	 * ABSTRACT METHODS (EVENTS)
 	 * ===========================================================================================
